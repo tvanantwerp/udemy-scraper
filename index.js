@@ -46,19 +46,28 @@ async function scrapeCourses (page, pageCount) {
       );
     }
 
-    await page.waitForSelector('.card-wrapper');
-    await page.evaluate(() => {
-      let courseObjects = document.body.querySelectorAll ('.a.card--learning__details');
+    await page.waitForSelector('.card--learning__details');
 
-      courseObjects.forEach(course => {
-        courses.push({
-          url: course.href,
-          title: course.querySelector('.details__name'),
-          author: course.querySelector('.details__instructor'),
-          completion: course.querySelector('.progress__text')
+    const newCourses = await page.evaluate(() => {
+      let coursesOnPage = [];
+      const courseNodes = document.body.querySelectorAll('a.card--learning__details');
+
+      courseNodes.forEach(course => {
+        const progress = course.querySelector('.progress__text')
+          ? parseInt(String(course.querySelector('.progress__text').textContent).split('%')[0])
+          : 0;
+        coursesOnPage.push({
+          url: String(course.href),
+          title: String(course.querySelector('.details__name').textContent),
+          author: String(course.querySelector('.details__instructor').textContent),
+          completion: progress
         })
       });
+
+      return coursesOnPage;
     });
+
+    courses = [...courses, ...newCourses];
   }
 
   return courses;
