@@ -1,5 +1,16 @@
 const puppeteer = require ('puppeteer');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 require('dotenv').config();
+
+const csvWriter = createCsvWriter({
+  path: './courses.csv',
+  header: [
+    {id: 'course', title: 'Course'},
+    {id: 'author', title: 'Author'},
+    {id: 'completion', title: 'Completion'},
+    {id: 'url', title: 'URL'}
+  ]
+});
 
 puppeteer
   .launch({
@@ -30,7 +41,10 @@ puppeteer
       })
 
       courses = await scrapeCourses(page, pageCount);
-      console.log(courses);
+
+      csvWriter.writeRecords(courses)
+        .then(() => console.log('Courses CSV written successfully'))
+        .catch(error => console.error(error))
 
       await browser.close();
     }
@@ -57,10 +71,10 @@ async function scrapeCourses (page, pageCount) {
           ? parseInt(String(course.querySelector('.progress__text').textContent).split('%')[0])
           : 0;
         coursesOnPage.push({
-          url: String(course.href),
-          title: String(course.querySelector('.details__name').textContent),
+          course: String(course.querySelector('.details__name').textContent),
           author: String(course.querySelector('.details__instructor').textContent),
-          completion: progress
+          completion: progress,
+          url: String(course.href),
         })
       });
 
