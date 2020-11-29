@@ -8,8 +8,8 @@ puppeteer
       let nextPage = 1;
       let courses = [];
       await page.goto('https://www.udemy.com/join/login-popup/', { waitUntil: "networkidle0" });
-      await page.type('#email--1', 'username');
-      await page.type('#id_password', 'password');
+      await page.type('#email--1', process.env.USERNAME);
+      await page.type('#id_password', process.env.PASSWORD);
       await page.click('#submit-id-submit');
       await page.waitForNavigation({ waitUntil: "networkidle0" });
 
