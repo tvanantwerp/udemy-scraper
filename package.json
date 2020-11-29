@@ -1,0 +1,11 @@
+{
+  "name": "udemy-scraper",
+  "version": "1.0.0",
+  "description": "Get info on courses purchased on Udemy.",
+  "main": "index.js",
+  "author": "Tom VanAntwerp <tom@tomvanantwerp.com>",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^5.5.0"
+  }
+}
